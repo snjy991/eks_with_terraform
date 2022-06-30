@@ -14,7 +14,11 @@ In this we are deploying the python application in EKS cluster. Required infra i
     1. 01_terraform_statemgmt- Terraform will lock your state for all operations that could write state. This prevents others from acquiring the lock and potentially corrupting your state.
 
     2. 02_ecr- This terraform template is used to create ECR for managing container images
-2. 02_eks_cluster- All the required files for EKS cluster creation placed under this directory structure, ADO CI pipeline is also added,
+
+2. 02_eks_cluster- All the required files for EKS cluster creation placed under this directory structure, ADO CI pipeline is also added.
+
+Architecture diagram-
+<img src="./02_eks_cluster/EKS_Network_Setup.png" alt="AWS VPC 2 Tier Architecture diagram" width="250"/>
 
 3. 03_eks_adons- All the required resources for adding aws load balancer controller placed in eks_adons
 
