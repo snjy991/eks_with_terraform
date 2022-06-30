@@ -17,8 +17,8 @@ In this we are deploying the python application in EKS cluster. Required infra i
 
 2. 02_eks_cluster- All the required files for EKS cluster creation placed under this directory structure, ADO CI pipeline is also added.
 
-Architecture diagram-
-<img src="./02_eks_cluster/EKS_Network_Setup.png" alt="AWS VPC 2 Tier Architecture diagram" width="250"/>
+Architecture diagrams-
+<img src="./02_eks_cluster/EKS_Network_Setup.png" alt="AWS VPC 2 Tier Architecture diagram"/>
 
 3. 03_eks_adons- All the required resources for adding aws load balancer controller placed in eks_adons
 
