@@ -20,29 +20,15 @@ jobs:
           command: build
           repository: $(ecr_repo)
           tags: ${{ parameters.tag }}
-          # ${{ if startsWith(variables['BRANCH_NAME'], 'tag') }}:
-          #   tags: $(image_tag)_$(BRANCH_NAME)
-          # ${{ if startsWith(variables['BRANCH_NAME'], 'feature') }}:
-          #   tags: $(image_tag)
-          # ${{ if startsWith(variables['BRANCH_NAME'], 'develop') }}:
-          #   tags: $(image_tag)_dev
-          # ${{ if startsWith(variables['BRANCH_NAME'], 'release') }}:
-          #   tags: $(image_tag)_$(RELEASE_BRANCH_NAME)
           dockerFile: '**/Dockerfile'
+          
       - script: |
           mkdir report
           trivy image -s HIGH,CRITICAL --format template --template "@./trivy/contrib/junit.tpl" -o junit-report-high.xml $(ecr_repo):${{ parameters.tag }}
           trivy image -s LOW,MEDIUM --format template --template "@./trivy/contrib/junit.tpl" -o junit-report-low.xml $(ecr_repo):${{ parameters.tag }}
         displayName: "Image scan by Trivy"
         continueOnError: true
-      # - task: Docker@2
-      #   displayName: 'Push the Docker image to Dockerhub'
-      #   inputs:
-      #     containerRegistry: 'dockerhub_san'
-      #     repository: '$(image_name)'
-      #     tags: ${{ parameters.tag }}
-      #     command: 'push'
-      
+
       - task: ECRPushImage@1
         inputs:
           awsCredentials: 'sanjay-personal'

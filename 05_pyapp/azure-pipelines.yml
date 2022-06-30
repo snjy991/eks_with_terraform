@@ -31,11 +31,6 @@ variables:
 
   - group: ecr_common_var
 
-  # BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
-  # RELEASE_BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/release/', '')]
-  # trivyVersion: 0.9.1
-  # image_name: snjy991/pyapp
-  # image_tag: '$(Build.BuildId)'
 pool: 
   vmImage: 'ubuntu-latest'
 
@@ -72,36 +67,3 @@ stages:
       - template: template/build.yaml
         parameters:
           tag: $(image_tag)_$(BRANCH_NAME)
-
-
-
-
-  # - task: Docker@2
-  #   displayName: 'Build an image'
-  #   inputs:
-  #     command: build
-  #     repository: $(image_name)
-  #     ${{ if startsWith(variables['BRANCH_NAME'], 'tag') }}:
-  #      tags: $(image_tag)_$(BRANCH_NAME)
-  #     ${{ if startsWith(variables['BRANCH_NAME'], 'feature') }}:
-  #      tags: $(image_tag)
-  #     ${{ if startsWith(variables['BRANCH_NAME'], 'develop') }}:
-  #      tags: $(image_tag)_dev
-  #     ${{ if startsWith(variables['BRANCH_NAME'], 'release') }}:
-  #      tags: $(image_tag)_$(RELEASE_BRANCH_NAME)
-  #     dockerFile: '**/Dockerfile'
-
-
-  # - script: |
-  #     mkdir report
-  #     trivy image -s HIGH,CRITICAL $(image_name) | tee ./report/trivy-image-scan-report.txt
-  #   displayName: "Image scan by Trivy"
-  #   continueOnError: true
-
-  # - task: Docker@2
-  #   displayName: 'Push the Docker image to Dockerhub'
-  #   inputs:
-  #     containerRegistry: 'dockerhub_san'
-  #     repository: '$(image_name)'
-  #     command: 'push'
-  #   # condition: and(succeeded(), eq(variables['BRANCH_NAME'], 'develop'))
