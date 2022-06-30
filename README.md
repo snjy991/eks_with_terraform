@@ -20,6 +20,8 @@ In this we are deploying the python application in EKS cluster. Required infra i
 Architecture diagrams-
 <img src="./02_eks_cluster/EKS_Network_Setup.png" alt="AWS VPC 2 Tier Architecture diagram"/>
 
+<img src="./02_eks_cluster/EKS_Archiecture.png" alt="EKS Architecture Diagram"/>
+
 3. 03_eks_adons- All the required resources for adding aws load balancer controller placed in eks_adons
 
 4. 04_argocd_deployment- Contains the shell script to deploy the ArgoCD for kubernetes application deployment
@@ -27,3 +29,6 @@ Architecture diagrams-
 5. 05_pyapp- This contains a sample python application code, with its CI pipeline which will be build the image, scan and publish it to ECR repo
 
 6. 06_pyapp-k8manifest- Used by ArgoCD to deploy the k8 manifests file to eks cluster.
+
+Kubernetes app deployment with k8 objects-
+<img src="./06_pyapp-k8manifest/img/App_deployment.png" alt="Application deployment on EKS"/>
