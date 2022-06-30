@@ -1,0 +1,8 @@
+.terraform
+
+*.hcl
+*.tfplan
+*.tfstate
+*.tfstate.backup
+*.zip
+*.DS_Store

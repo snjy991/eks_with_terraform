@@ -1,0 +1,19 @@
+
+name: $(BuildID)
+trigger:
+  branches:
+    include:
+      - "*"
+pool: 
+  vmImage: 'ubuntu-latest'
+stages: 
+  - stage: 'Build'
+    displayName: Build Terraform
+    jobs:
+      - job:
+        displayName: 'packaging Terraform'
+        steps:
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(Build.SourcesDirectory)
+              artifactName: 'artifacts'

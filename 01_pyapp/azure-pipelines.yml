@@ -1,0 +1,107 @@
+
+name: $(BuildID)
+trigger:
+  branches:
+    include:
+      - "*"
+variables:
+  - name: isFeature
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/')]
+
+  - name: isDevelop
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/develop')]
+
+  - name: isTag
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/tag')]
+
+  - name: BRANCH_NAME
+    value: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
+
+  - name: RELEASE_BRANCH_NAME
+    value: $[replace(variables['Build.SourceBranch'], 'refs/heads/release/', '')]
+
+  - name: trivyVersion
+    value: 0.29.2
+  
+  - name: image_name
+    value: pyapp
+
+  - name: image_tag
+    value: '$(Build.BuildId)'
+
+  - group: ecr_common_var
+
+  # BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
+  # RELEASE_BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/release/', '')]
+  # trivyVersion: 0.9.1
+  # image_name: snjy991/pyapp
+  # image_tag: '$(Build.BuildId)'
+pool: 
+  vmImage: 'ubuntu-latest'
+
+
+stages: 
+  - stage: 'Build'
+    displayName: feature branch build
+    condition: eq(variables.isFeature, true)
+    jobs:
+      - template: template/build.yaml
+        parameters:
+            tag: $(image_tag)
+        
+  - stage: 'Build_Dev'
+    displayName: develop branch build
+    condition: eq(variables.isDevelop, true)
+    jobs:
+      - template: template/build.yaml
+        parameters:
+          tag: $(image_tag)_dev
+
+  - stage: 'Build_QA'
+    displayName: release branch build
+    condition: eq(variables.isRelease, true)
+    jobs:
+      - template: template/build.yaml
+        parameters:
+          tag: $(image_tag)_$(RELEASE_BRANCH_NAME)
+
+  - stage: 'Build_specific_build_tag'
+    displayName: repo tag based
+    condition: eq(variables.isTag, true)
+    jobs:
+      - template: template/build.yaml
+        parameters:
+          tag: $(image_tag)_$(BRANCH_NAME)
+
+
+
+
+  # - task: Docker@2
+  #   displayName: 'Build an image'
+  #   inputs:
+  #     command: build
+  #     repository: $(image_name)
+  #     ${{ if startsWith(variables['BRANCH_NAME'], 'tag') }}:
+  #      tags: $(image_tag)_$(BRANCH_NAME)
+  #     ${{ if startsWith(variables['BRANCH_NAME'], 'feature') }}:
+  #      tags: $(image_tag)
+  #     ${{ if startsWith(variables['BRANCH_NAME'], 'develop') }}:
+  #      tags: $(image_tag)_dev
+  #     ${{ if startsWith(variables['BRANCH_NAME'], 'release') }}:
+  #      tags: $(image_tag)_$(RELEASE_BRANCH_NAME)
+  #     dockerFile: '**/Dockerfile'
+
+
+  # - script: |
+  #     mkdir report
+  #     trivy image -s HIGH,CRITICAL $(image_name) | tee ./report/trivy-image-scan-report.txt
+  #   displayName: "Image scan by Trivy"
+  #   continueOnError: true
+
+  # - task: Docker@2
+  #   displayName: 'Push the Docker image to Dockerhub'
+  #   inputs:
+  #     containerRegistry: 'dockerhub_san'
+  #     repository: '$(image_name)'
+  #     command: 'push'
+  #   # condition: and(succeeded(), eq(variables['BRANCH_NAME'], 'develop'))
