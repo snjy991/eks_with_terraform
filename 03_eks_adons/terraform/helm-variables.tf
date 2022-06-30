@@ -22,21 +22,21 @@ variable "helm_chart_extra_set_configs" {
 }
 
 variable "aws_ecr_repo" {
-    description = "ECR repo url for aws load balancer images it changes based on region"
-    type = string
-    default = "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller"
-  
+  description = "ECR repo url for aws load balancer images it changes based on region"
+  type        = string
+  default     = "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller"
+
 }
 
 variable "aws_ecr_repo_tag" {
-   description="aws load balancer controller image tag"
-   type= string
-   default= "v2.4.2"
+  description = "aws load balancer controller image tag"
+  type        = string
+  default     = "v2.4.2"
 }
 
 variable "create_service_account" {
-    description = "flag for creating service account for aws load balancer controller"
-    type = bool
-    default = true
-  
+  description = "flag for creating service account for aws load balancer controller"
+  type        = bool
+  default     = true
+
 }

@@ -1,8 +1,8 @@
 terraform {
-   required_version = ">= 1.0.0"
-   required_providers {
+  required_version = ">= 1.0.0"
+  required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "4.12.1"
     }
   }
@@ -10,7 +10,7 @@ terraform {
 
 provider "aws" {
   # Configuration options
-    region = var.aws_region
+  region = var.aws_region
 }
 
 provider "aws" {
@@ -24,7 +24,7 @@ data "aws_caller_identity" "current" {}
 locals {
   owner = "account-mgmt"
   common_tags = {
-    owner = local.owner
+    owner            = local.owner
     LastModifiedTime = timestamp()
     LastModifiedBy   = data.aws_caller_identity.current.arn
   }
@@ -56,8 +56,8 @@ POLICY
 }
 
 resource "aws_s3_bucket" "terraform_state_management_bucket" {
-  bucket  = "terraform-${data.aws_caller_identity.current.account_id}"
-  tags    = "${local.common_tags}"
+  bucket = "terraform-${data.aws_caller_identity.current.account_id}"
+  tags   = local.common_tags
   policy = <<POLICY
 {
     "Version": "2012-10-17",
@@ -103,29 +103,29 @@ POLICY
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        kms_master_key_id = "${aws_kms_key.terraform_state_management_bucket_key.arn}"
+        kms_master_key_id = aws_kms_key.terraform_state_management_bucket_key.arn
         sse_algorithm     = "aws:kms"
       }
     }
   }
 
   replication_configuration {
-    role = "${aws_iam_role.statemgmt_replication.arn}"
+    role = aws_iam_role.statemgmt_replication.arn
 
     rules {
       id     = "replicate-to-eu-central"
       status = "Enabled"
 
       destination {
-        bucket        = "${aws_s3_bucket.destination_bucket.arn}"
+        bucket        = aws_s3_bucket.destination_bucket.arn
         storage_class = "STANDARD"
       }
     }
   }
 
   lifecycle_rule {
-	id 		= "ObjExpiry"
-	enabled = true
+    id      = "ObjExpiry"
+    enabled = true
     noncurrent_version_expiration {
       days = 90
     }
@@ -195,12 +195,12 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "replication" {
-  role       = "${aws_iam_role.statemgmt_replication.name}"
-  policy_arn = "${aws_iam_policy.replication_policy.arn}"
+  role       = aws_iam_role.statemgmt_replication.name
+  policy_arn = aws_iam_policy.replication_policy.arn
 }
 
 resource "aws_s3_bucket" "destination_bucket" {
-  bucket = "terraform-${data.aws_caller_identity.current.account_id}-us-west-1"
+  bucket   = "terraform-${data.aws_caller_identity.current.account_id}-us-west-1"
   provider = "aws.us-west"
 
   versioning {
@@ -209,10 +209,10 @@ resource "aws_s3_bucket" "destination_bucket" {
 }
 
 resource "aws_dynamodb_table" "terraform_state_locking_lock_id" {
-  name            = "terraform-state-locking"
-  read_capacity   = 1
-  write_capacity  = 1
-  hash_key = "LockID"
+  name           = "terraform-state-locking"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "LockID"
   attribute {
     name = "LockID"
     type = "S"

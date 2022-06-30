@@ -11,7 +11,7 @@ terraform {
   required_version = "1.0.0"
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "4.12.1"
     }
     helm = {
@@ -25,9 +25,9 @@ terraform {
       version = "~> 2.1"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "~> 2.11"
-    }  
+    }
   }
   backend "s3" {
     key            = "eks_adons.tfstate"
@@ -36,20 +36,20 @@ terraform {
 }
 
 locals {
-  owner = var.owner_id
+  owner          = var.owner_id
   environment_id = var.environment_id
-  name = "${var.owner_id}-${var.environment_id}"
+  name           = "${var.owner_id}-${var.environment_id}"
   common_tags = {
-    owners = local.owner
-    environment = local.environment_id
+    owners           = local.owner
+    environment      = local.environment_id
     LastModifiedTime = timestamp()
     LastModifiedBy   = data.aws_caller_identity.current.arn
   }
-} 
+}
 
 provider "aws" {
   # Configuration options
-    region = var.aws_region
+  region = var.aws_region
 }
 
 provider "helm" {
@@ -61,9 +61,9 @@ provider "helm" {
 }
 
 provider "kubernetes" {
-  host = data.terraform_remote_state.eks.outputs.cluster_endpoint 
+  host                   = data.terraform_remote_state.eks.outputs.cluster_endpoint
   cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_certificate_authority_data)
-  token = data.aws_eks_cluster_auth.cluster.token
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 provider "http" {
   # Configuration options

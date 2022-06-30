@@ -7,9 +7,9 @@ locals {
     },
     #federated access of eks cluster to sso
     {
-      rolearn= "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/AWSReservedSSO_AdministratorAccess_c8d9d0016663dee4"
-      username= "{{SessionName}}"
-      groups= ["system:masters"]
+      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/AWSReservedSSO_AdministratorAccess_c8d9d0016663dee4"
+      username = "{{SessionName}}"
+      groups   = ["system:masters"]
     }
   ]
   # configmap_users = [
@@ -27,7 +27,7 @@ locals {
 }
 
 resource "kubernetes_config_map_v1" "aws_auth" {
-  depends_on = [aws_eks_cluster.eks_cluster  ]
+  depends_on = [aws_eks_cluster.eks_cluster]
   metadata {
     name      = "aws-auth"
     namespace = "kube-system"
@@ -35,5 +35,5 @@ resource "kubernetes_config_map_v1" "aws_auth" {
   data = {
     mapRoles = yamlencode(local.configmap_roles)
     # mapUsers = yamlencode(local.configmap_users)
-  }  
+  }
 }

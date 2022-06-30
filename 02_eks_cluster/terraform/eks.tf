@@ -2,13 +2,13 @@
 resource "aws_eks_cluster" "eks_cluster" {
   name     = "${local.name}-${var.cluster_name}"
   role_arn = aws_iam_role.eks_master_role.arn
-  version = var.cluster_version
+  version  = var.cluster_version
   # tags= local.common_tags
   vpc_config {
-    subnet_ids = module.vpc.private_subnets
+    subnet_ids              = module.vpc.private_subnets
     endpoint_private_access = var.cluster_endpoint_private_access
     endpoint_public_access  = var.cluster_endpoint_public_access
-    public_access_cidrs     = var.cluster_endpoint_public_access_cidrs    
+    public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
   }
 
   kubernetes_network_config {
@@ -16,14 +16,14 @@ resource "aws_eks_cluster" "eks_cluster" {
   }
 
   encryption_config {
-      provider {
-        key_arn = aws_kms_key.eks.arn
-      }
-      resources        = ["secrets"]
+    provider {
+      key_arn = aws_kms_key.eks.arn
     }
-  
-  
-  
+    resources = ["secrets"]
+  }
+
+
+
   # Enable EKS Cluster Control Plane Logging
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
