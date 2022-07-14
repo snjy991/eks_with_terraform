@@ -71,7 +71,7 @@ variable "vpc_create_database_subnet_route_table" {
 variable "vpc_enable_nat_gateway" {
   description = "Enable NAT Gateways for Private Subnets Outbound Communication"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "vpc_single_nat_gateway" {

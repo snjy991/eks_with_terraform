@@ -3,6 +3,7 @@ output "aws_iam_openid_connect_provider_arn" {
   value       = aws_iam_openid_connect_provider.oidc_provider.arn
 }
 
+#Used in IAM roles
 output "aws_iam_openid_connect_provider_extract_from_arn" {
   description = "AWS IAM Open ID Connect Provider extract from ARN"
   value       = local.aws_iam_oidc_connect_provider_extract_from_arn
